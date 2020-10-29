@@ -1,4 +1,3 @@
-// import db from "../firebase";
 import db from "../firebaseInit";
 
 class TutorialDataService {
