@@ -34,13 +34,13 @@ export default function TutorialsList(props) {
     setTutorials(tus);
   };
 
-  useEffect(() => {
-    TutorialDataService.getAll().then((snapshot) => {
-      console.log("데이터 가져옴");
-      console.log(snapshot.docs.map((doc) => doc.data()));
-      onDataChange(snapshot.docs);
-    });
-  }, []);
+  // useEffect(() => {
+  //   TutorialDataService.getAll().then((snapshot) => {
+  //     console.log("데이터 가져옴");
+  //     console.log(snapshot.docs.map((doc) => doc.data()));
+  //     onDataChange(snapshot.docs);
+  //   });
+  // }, []);
 
   const refreshList = () => {
     TutorialDataService.getAll().then((snapshot) => {
