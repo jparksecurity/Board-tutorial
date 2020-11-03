@@ -6,9 +6,11 @@ Tutorial.propTypes = {};
 
 export default function Tutorial(props) {
   const [currentTutorial, setCurrentTutorial] = useState({
-    key: null,
+    // key: null,
+    name: "",
     title: "",
     description: "",
+    fireurl: [],
     published: false,
   });
   //   const [currentTutorial, setCurrentTutorial] = useState(props.tutorial);
@@ -86,6 +88,11 @@ export default function Tutorial(props) {
         <div className="edit-form">
           <form>
             <div className="form-group">
+              <label htmlFor="name">Name</label>
+              {currentTutorial.name}
+            </div>
+
+            <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
                 type="text"
@@ -95,6 +102,12 @@ export default function Tutorial(props) {
                 onChange={onChangeTitle}
               />
             </div>
+
+            <div className="form-group">
+              <label htmlFor="fileurl">FileUrl</label>
+              {currentTutorial.fileurl}
+            </div>
+
             <div className="form-group">
               <label htmlFor="description">Description</label>
               <input

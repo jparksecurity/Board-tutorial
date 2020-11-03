@@ -14,20 +14,22 @@ export default function TutorialsList(props) {
     let tus = [];
 
     items.forEach((item, i) => {
-      let key = item.data().key;
+      // let key = item.data().key;
+      let name = item.data().name;
       let title = item.data().title;
-      let description = item.data().description;
-      let published = item.data().published;
+      let description = item.data().desc;
+      let fileurl = item.data().fileurl;
       // console.log("key");
       // console.log(item.data().key);
       // console.log("data");
       // console.log(item.data().title);
 
       tus.push({
-        key: key,
+        // key: key,
+        name: name,
         title: title,
         description: description,
-        published: published,
+        fileurl: fileurl,
       });
     });
 

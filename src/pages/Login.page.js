@@ -1,6 +1,7 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 import Login from "../components/Login";
+import UploadMultipleFiles from "../components/multipleFiles/UploadMultipleFiles";
 
 export default function LoginPage() {
   return (
