@@ -1,44 +1,24 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import TutorialDataService from "../services/tutorial";
 import Tutorial from "./Tutorial";
 
-TutorialsList.propTypes = {};
-
-export default function TutorialsList(props) {
+export default function TutorialsList() {
   const [tutorials, setTutorials] = useState([]);
-  const [currentTutorial, setCurrentTutorial] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
-  var url = [];
-
-  const onDataChange = (items, snapshot) => {
-    setTutorials(items.map(item => ({ ...item.data() })));
-  };
+  const loadTutorialData = () => {
+    TutorialDataService.getAll().then((snapshot) => {
+      setTutorials(snapshot.docs.map(item => ({ ...item.data() })));
+    });
+  }
 
   useEffect(() => {
-    TutorialDataService.getAll().then((snapshot) => {
-      console.log("데이터 가져옴");
-      console.log(snapshot.docs.map((doc) => doc.data()));
-      // console.log(snapshot.docs.map((doc) => doc.data()));
-      onDataChange(snapshot.docs, snapshot);
-    });
+    loadTutorialData();
   }, []);
 
   const refreshList = () => {
-    TutorialDataService.getAll().then((snapshot) => {
-      console.log("데이터 가져옴");
-      console.log(snapshot.docs.map((doc) => doc.data()));
-      onDataChange(snapshot.docs);
-    });
-
-    setCurrentTutorial(null);
+    loadTutorialData();
     setCurrentIndex(-1);
-  };
-
-  const setActiveTutorial = (tutorial, index) => {
-    setCurrentTutorial(tutorial);
-    setCurrentIndex(index);
   };
 
   const removeAllTutorials = () => {
@@ -46,9 +26,6 @@ export default function TutorialsList(props) {
     refreshList();
   };
 
-  // console.log("currentTuRkey");
-  // console.log(currentTutorial.key);
-  console.log(tutorials);
   return (
     <div className="list row">
       <div className="col-md-6">
@@ -61,7 +38,7 @@ export default function TutorialsList(props) {
                 className={
                   "list-group-item " + (index === currentIndex ? "active" : "")
                 }
-                onClick={() => setActiveTutorial(tutorial, index)}
+                onClick={() => setCurrentIndex(index)}
                 key={index}
               >
                 {tutorial.title}
@@ -77,8 +54,8 @@ export default function TutorialsList(props) {
         </button> */}
       </div>
       <div className="col-md-6">
-        {currentTutorial ? (
-          <Tutorial tutorial={currentTutorial} refreshList={refreshList} />
+        {currentIndex >= 0 ? (
+          <Tutorial tutorial={tutorials[currentIndex]} refreshList={refreshList} />
         ) : (
           <div>
             <br />

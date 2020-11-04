@@ -1,44 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import TutorialDataService from "../services/tutorial";
 
-Tutorial.propTypes = {};
+export default function Tutorial({ tutorial, refreshList }) {
+    const [currentTutorial, setCurrentTutorial] = useState(tutorial);
 
-var atag = "";
-
-export default function Tutorial(props) {
-  const [currentTutorial, setCurrentTutorial] = useState({
-    // key: null,
-    name: "",
-    title: "",
-    description: "",
-    fireurl: [],
-    published: false,
-  });
-  //   const [currentTutorial, setCurrentTutorial] = useState(props.tutorial);
-  const [message, setMessage] = useState("");
-  const aRef = useRef();
-
-  // 임시
-  const getDerivedStateFromProps = (nextProps, prevState) => {
-    const { tutorial } = nextProps;
-    if (prevState.currentTutorial.key !== tutorial.key) {
-      return {
-        currentTutorial: tutorial,
-        message: "",
-      };
-    }
-
-    return prevState.currentTutorial;
-  };
-
-  // ComponentDidMount
-  useEffect(() => {
-    setCurrentTutorial(props.tutorial);
-    console.log(props.tutorial);
-
-    atag = props.tutorial.fileurl;
-  }, [props.tutorial.title, props.tutorial.description]);
+    console.log('tutorial', tutorial);
 
   const onChangeTitle = (e) => {
     const title = e.target.value;
@@ -63,19 +29,13 @@ export default function Tutorial(props) {
     console.log("currentTutkey");
     console.log(currentTutorial.key);
     TutorialDataService.update(currentTutorial.key, data);
-    props.refreshList();
+    refreshList();
   };
 
   const deleteTutorial = () => {
-    // if (TutorialDataService.delete(currentTutorial.key)) {
     TutorialDataService.delete(currentTutorial.key);
-    props.refreshList();
-    // }
+    refreshList();
   };
-
-  console.log("tut 변경중");
-  console.log(currentTutorial);
-  console.log(atag);
 
   return (
     <div>
@@ -98,22 +58,18 @@ export default function Tutorial(props) {
                 marginBottom: "20px",
               }}
             >
-              {currentTutorial && (
-                // currentTutorial.fileurl.map((url, index) => (
-                //   <li key={index}>{url}</li>
-                // ))}
-                // <li key={index}>
+              {currentTutorial.fileurl.map((url, index) => (
                 <li>
-                  {currentTutorial.fname}
+                  {currentTutorial.fname[index]}
                   <a
-                    href={currentTutorial.fileurl}
+                    href={url}
                     style={{ marginLeft: "10px" }}
                     download
                   >
                     Download
                   </a>
                 </li>
-              )}
+                ))}
             </ul>
 
             <div className="form-group">
@@ -177,7 +133,6 @@ export default function Tutorial(props) {
           >
             Update
           </button>
-          <p>{message}</p>
         </div>
       ) : (
         <div>
