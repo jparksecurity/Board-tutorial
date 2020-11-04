@@ -271,9 +271,6 @@ export default function UploadMultipleFiles(props) {
         .child(`your/file/path/${file.name}`)
         .put(file);
 
-      promises.push(uploadTask);
-      // setFileUrl(uploadTask.snapshot.ref.getDownloadURL());
-
       uploadTask.on(
         firebase.storage.TaskEvent.STATE_CHANGED,
         function (snapshot) {
@@ -281,35 +278,22 @@ export default function UploadMultipleFiles(props) {
           console.log(percent + "% done");
         },
         (error) => console.log(error.code),
-        async () => {
-          const downloadURL = await uploadTask.snapshot.ref
+        () => {
+          uploadTask.snapshot.ref
             .getDownloadURL()
-            //setFile 지연 문제
             .then(function (downloadURL) {
-              // setFileUrl 추가 url 저장용 prevS? async-await? func?
-              setFileUrl((prevState) => [...prevState, downloadURL]);
-              // setFileUrl([downloadURL]);
-              // f(downloadURL);
-
               console.log("*******");
-              console.log(fileUrl);
+              console.log(downloadURL);
               const id = uuid();
               const fileRef = db.collection("users").doc(id);
               fileRef.set({
-                //db.collection("users").doc(username).set({
                 key: fileRef.id,
                 name: username,
                 title: title,
                 desc: description,
-                filurl: fileUrl,
+                filurl: downloadURL,
               });
-
-              console.log("File available at", downloadURL);
-              // setFileUrl(downloadURL);
-              // props.setImageUrl(...setImage, downloadURL);
-              console.log(fileUrl);
             });
-          // do something with the url
         }
       );
     });
