@@ -20,7 +20,7 @@ export default function TutorialsList(props) {
       let name = item.data().name;
       let title = item.data().title;
       let description = item.data().desc;
-      let fileurl = item.data().fileurl[0].downloadURL;
+      const fileurl = item.data().fileurl.map(element => element.downloadURL);
       let fname = item.data().fname[0];
 
       tus.push({
