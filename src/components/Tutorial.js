@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import TutorialDataService from "../services/tutorial";
 
 Tutorial.propTypes = {};
+
+var atag = "";
 
 export default function Tutorial(props) {
   const [currentTutorial, setCurrentTutorial] = useState({
@@ -15,6 +17,7 @@ export default function Tutorial(props) {
   });
   //   const [currentTutorial, setCurrentTutorial] = useState(props.tutorial);
   const [message, setMessage] = useState("");
+  const aRef = useRef();
 
   // 임시
   const getDerivedStateFromProps = (nextProps, prevState) => {
@@ -33,6 +36,8 @@ export default function Tutorial(props) {
   useEffect(() => {
     setCurrentTutorial(props.tutorial);
     console.log(props.tutorial);
+
+    atag = props.tutorial.fileurl;
   }, [props.tutorial.title, props.tutorial.description]);
 
   const onChangeTitle = (e) => {
@@ -53,16 +58,6 @@ export default function Tutorial(props) {
     }));
   };
 
-  const updatePublished = (status) => {
-    console.log("status 변경중p");
-    console.log(status);
-    setCurrentTutorial({ ...currentTutorial, published: status });
-    const data = currentTutorial;
-    console.log("tut 변경중p");
-    console.log(currentTutorial.published);
-    TutorialDataService.update(currentTutorial.key, { published: status });
-  };
-
   const updateTutorial = () => {
     const data = currentTutorial;
     console.log("currentTutkey");
@@ -80,6 +75,7 @@ export default function Tutorial(props) {
 
   console.log("tut 변경중");
   console.log(currentTutorial);
+  console.log(atag);
 
   return (
     <div>
@@ -87,10 +83,38 @@ export default function Tutorial(props) {
       {currentTutorial ? (
         <div className="edit-form">
           <form>
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
+            <div style={{ backgroundColor: "skyblue", marginRight: "10px" }}>
+              <label htmlFor="name" style={{ marginRight: "10px" }}>
+                작성자 :
+              </label>
               {currentTutorial.name}
             </div>
+
+            <ul
+              className="list-group"
+              style={{
+                marginTop: "20px",
+                marginRight: "20px",
+                marginBottom: "20px",
+              }}
+            >
+              {currentTutorial && (
+                // currentTutorial.fileurl.map((url, index) => (
+                //   <li key={index}>{url}</li>
+                // ))}
+                // <li key={index}>
+                <li>
+                  {currentTutorial.fname}
+                  <a
+                    href={currentTutorial.fileurl}
+                    style={{ marginLeft: "10px" }}
+                    download
+                  >
+                    Download
+                  </a>
+                </li>
+              )}
+            </ul>
 
             <div className="form-group">
               <label htmlFor="title">Title</label>
@@ -103,10 +127,10 @@ export default function Tutorial(props) {
               />
             </div>
 
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="fileurl">FileUrl</label>
               {currentTutorial.fileurl}
-            </div>
+      </div> */}
 
             <div className="form-group">
               <label htmlFor="description">Description</label>
@@ -118,16 +142,15 @@ export default function Tutorial(props) {
                 onChange={onChangeDescription}
               />
             </div>
-
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>
                 <strong>Status:</strong>
               </label>
               {currentTutorial.published ? "Published" : "Pending"}
-            </div>
+            </div> */}
           </form>
 
-          {currentTutorial.published ? (
+          {/* {currentTutorial.published ? (
             <button
               className="badge badge-primary mr-2"
               onClick={() => updatePublished(false)}
@@ -141,7 +164,7 @@ export default function Tutorial(props) {
             >
               Publish
             </button>
-          )}
+          )} */}
 
           <button className="badge badge-danger mr-2" onClick={deleteTutorial}>
             Delete

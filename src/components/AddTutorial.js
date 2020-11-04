@@ -19,8 +19,6 @@ export default function AddTutorial(props) {
         </div>
       ) : (
         <div>
-          
-
           <div className="form-group">
             <label>Upload</label>
             <UploadMultipleFiles

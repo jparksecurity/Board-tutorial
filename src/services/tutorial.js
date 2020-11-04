@@ -2,11 +2,11 @@ import db from "../firebaseInit";
 
 class TutorialDataService {
   getAll() {
-    return db.collection("tutorials").get();
+    return db.collection("users").get();
   }
 
   create(tutorial) {
-    const uRef = db.collection("tutorials").doc();
+    const uRef = db.collection("users").doc();
     console.log("uRef Key");
     console.log(uRef.id);
 
@@ -25,7 +25,7 @@ class TutorialDataService {
   }
 
   update(key, value) {
-    const kRef = db.collection("tutorials").doc(key);
+    const kRef = db.collection("users").doc(key);
     kRef
       //.update(value)
       .set(value, { merge: true })
@@ -39,7 +39,7 @@ class TutorialDataService {
   }
 
   delete(key) {
-    db.collection("tutorials")
+    db.collection("users")
       .doc(key)
       .delete()
       .then(() => console.log("Document deleted")) // Document deleted
@@ -47,7 +47,7 @@ class TutorialDataService {
   }
 
   deleteAll() {
-    db.collection("tutorials")
+    db.collection("users")
       .doc()
       .delete()
       .then(() => console.log("Document deleted")) // Document deleted

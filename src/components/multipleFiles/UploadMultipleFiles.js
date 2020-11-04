@@ -261,18 +261,22 @@ export default function UploadMultipleFiles(props) {
     }
   };
 
+  var url = [];
+  var fname = [];
+
   const onUploadSubmission = (e) => {
     e.preventDefault(); // prevent page refreshing
     const promises = [];
+    const id = uuid();
+
     files.forEach((file) => {
+      fname.push(file.name);
+
       const uploadTask = firebaseApp
         .storage()
         .ref()
         .child(`your/file/path/${file.name}`)
         .put(file);
-
-      promises.push(uploadTask);
-      // setFileUrl(uploadTask.snapshot.ref.getDownloadURL());
 
       uploadTask.on(
         firebase.storage.TaskEvent.STATE_CHANGED,
@@ -281,87 +285,42 @@ export default function UploadMultipleFiles(props) {
           console.log(percent + "% done");
         },
         (error) => console.log(error.code),
-        async () => {
-          const downloadURL = await uploadTask.snapshot.ref
-            .getDownloadURL()
-            //setFile 지연 문제
-            .then(function (downloadURL) {
-              // setFileUrl 추가 url 저장용 prevS? async-await? func?
-              setFileUrl((prevState) => [...prevState, downloadURL]);
-              // setFileUrl([downloadURL]);
-              // f(downloadURL);
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            console.log(downloadURL);
 
-              console.log("*******");
-              console.log(fileUrl);
-              const id = uuid();
-              const fileRef = db.collection("users").doc(id);
-              fileRef.set({
+            url.push({ downloadURL });
+
+            const fileRef = db.collection("users").doc(id);
+            fileRef.set(
+              {
                 //db.collection("users").doc(username).set({
                 key: fileRef.id,
                 name: username,
                 title: title,
                 desc: description,
-                filurl: fileUrl,
-              });
-
-              console.log("File available at", downloadURL);
-              // setFileUrl(downloadURL);
-              // props.setImageUrl(...setImage, downloadURL);
-              console.log(fileUrl);
-            });
-          // do something with the url
+                fileurl: url,
+                fname: fname,
+              },
+              { merge: true }
+            );
+          });
         }
       );
     });
     // return new Promise( function(){} ) 추가
     // then(2) 추가
     // return ?
-    return (
-      Promise.all(promises)
-        // .then(function () {
-        //   console.log("*******");
-        //   console.log(fileUrl);
-        //   const id = uuid();
-        //   const fileRef = db.collection("users").doc(id);
-        //   fileRef.set({
-        //     //db.collection("users").doc(username).set({
-        //     key: fileRef.id,
-        //     name: username,
-        //     title: title,
-        //     desc: description,
-        //     filurl: fileUrl,
-        //   });
-        // })
-        .then(
-          () => alert("All files uploaded"),
-          console.log(files),
-          setFiles([])
-          // newTutorial : state initialization
-          // newTutorial()
-        )
-        .catch((err) => console.log(err.code))
-    );
+    return Promise.all(promises)
+      .then(
+        () => alert("All files uploaded"),
+        console.log(files),
+        setFiles([])
+        // newTutorial : state initialization
+        // newTutorial()
+      )
+      .catch((err) => console.log(err.code));
   };
-  // useState는 비동기 특성 때문에 즉시 반영되지 않으므로 useEffect 사용
-  // useEffect(() => {
-  //   console.log("****UF fileUrl***");
-  //   console.log(fileUrl);
-  //   const id = uuid();
-  //   const fileRef = db.collection("users").doc(id);
-  //   fileRef.set({
-  //     //db.collection("users").doc(username).set({
-  //     key: fileRef.id,
-  //     name: username,
-  //     title: title,
-  //     desc: description,
-  //     filurl: fileUrl,
-  //   });
-  //   // state 초기화
-  // }, [fileUrl]);
-
-  // useEffect(() => console.log("re-render because files changed:", files), [
-  //   files,
-  // ]);
 
   // update한 file의 이름과 사이즈를 출력해줌
   function updateImageDisplay(e) {
@@ -410,11 +369,6 @@ export default function UploadMultipleFiles(props) {
       }
     }
   }
-
-  const f = (a) => {
-    setFileUrl([...fileUrl, a]);
-  };
-
   const newTutorial = () => {
     setUserName("");
     setTitle("");
@@ -422,25 +376,6 @@ export default function UploadMultipleFiles(props) {
     setSubmitted(false);
     setFileUrl([]);
   };
-
-  // const onSubmit = (e) => {
-  //   onUploadSubmission()
-  //     .then(() => {
-  //       const id = uuid();
-  //       const fileRef = db.collection("users").doc(id);
-  //       fileRef.set({
-  //         //db.collection("users").doc(username).set({
-  //         key: fileRef.id,
-  //         name: username,
-  //         title: title,
-  //         desc: description,
-  //         filurl: fileUrl,
-  //       });
-  //     })
-  //     .catch((err) => console.log(err.code));
-  //   // console.log("*******");
-  //   // console.log(fileUrl);
-  // };
 
   console.log("title");
   console.log(title);

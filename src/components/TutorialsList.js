@@ -10,7 +10,9 @@ export default function TutorialsList(props) {
   const [currentTutorial, setCurrentTutorial] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
-  const onDataChange = (items) => {
+  var url = [];
+
+  const onDataChange = (items, snapshot) => {
     let tus = [];
 
     items.forEach((item, i) => {
@@ -18,11 +20,8 @@ export default function TutorialsList(props) {
       let name = item.data().name;
       let title = item.data().title;
       let description = item.data().desc;
-      let fileurl = item.data().fileurl;
-      // console.log("key");
-      // console.log(item.data().key);
-      // console.log("data");
-      // console.log(item.data().title);
+      let fileurl = item.data().fileurl[0].downloadURL;
+      let fname = item.data().fname[0];
 
       tus.push({
         // key: key,
@@ -30,9 +29,10 @@ export default function TutorialsList(props) {
         title: title,
         description: description,
         fileurl: fileurl,
+        fname: fname,
       });
     });
-
+    console.log(tus);
     setTutorials(tus);
   };
 
@@ -40,7 +40,8 @@ export default function TutorialsList(props) {
     TutorialDataService.getAll().then((snapshot) => {
       console.log("데이터 가져옴");
       console.log(snapshot.docs.map((doc) => doc.data()));
-      onDataChange(snapshot.docs);
+      // console.log(snapshot.docs.map((doc) => doc.data()));
+      onDataChange(snapshot.docs, snapshot);
     });
   }, []);
 
@@ -67,6 +68,7 @@ export default function TutorialsList(props) {
 
   // console.log("currentTuRkey");
   // console.log(currentTutorial.key);
+  console.log(tutorials);
   return (
     <div className="list row">
       <div className="col-md-6">
