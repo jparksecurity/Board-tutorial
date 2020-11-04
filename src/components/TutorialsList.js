@@ -13,27 +13,7 @@ export default function TutorialsList(props) {
   var url = [];
 
   const onDataChange = (items, snapshot) => {
-    let tus = [];
-
-    items.forEach((item, i) => {
-      // let key = item.data().key;
-      let name = item.data().name;
-      let title = item.data().title;
-      let description = item.data().desc;
-      const fileurl = item.data().fileurl.map(element => element.downloadURL);
-      let fname = item.data().fname[0];
-
-      tus.push({
-        // key: key,
-        name: name,
-        title: title,
-        description: description,
-        fileurl: fileurl,
-        fname: fname,
-      });
-    });
-    console.log(tus);
-    setTutorials(tus);
+    setTutorials(items.map(item => ({ ...item.data() })));
   };
 
   useEffect(() => {
