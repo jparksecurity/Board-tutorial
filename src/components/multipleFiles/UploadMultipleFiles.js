@@ -263,7 +263,7 @@ export default function UploadMultipleFiles(props) {
 
   const onUploadSubmission = (e) => {
     e.preventDefault(); // prevent page refreshing
-    const promises = [];
+    const fileUrls = [];
     files.forEach((file) => {
       const uploadTask = firebaseApp
         .storage()
@@ -282,49 +282,23 @@ export default function UploadMultipleFiles(props) {
           uploadTask.snapshot.ref
             .getDownloadURL()
             .then(function (downloadURL) {
-              console.log("*******");
-              console.log(downloadURL);
-              const id = uuid();
-              const fileRef = db.collection("users").doc(id);
-              fileRef.set({
-                key: fileRef.id,
-                name: username,
-                title: title,
-                desc: description,
-                filurl: downloadURL,
-              });
+              fileUrls.push(downloadURL);
+
+              if(fileUrls.length === files.length) {
+                const id = uuid();
+                const fileRef = db.collection("users").doc(id);
+                fileRef.set({
+                  key: fileRef.id,
+                  name: username,
+                  title: title,
+                  desc: description,
+                  filurl: fileUrls,
+                });
+              }
             });
         }
       );
     });
-    // return new Promise( function(){} ) 추가
-    // then(2) 추가
-    // return ?
-    return (
-      Promise.all(promises)
-        // .then(function () {
-        //   console.log("*******");
-        //   console.log(fileUrl);
-        //   const id = uuid();
-        //   const fileRef = db.collection("users").doc(id);
-        //   fileRef.set({
-        //     //db.collection("users").doc(username).set({
-        //     key: fileRef.id,
-        //     name: username,
-        //     title: title,
-        //     desc: description,
-        //     filurl: fileUrl,
-        //   });
-        // })
-        .then(
-          () => alert("All files uploaded"),
-          console.log(files),
-          setFiles([])
-          // newTutorial : state initialization
-          // newTutorial()
-        )
-        .catch((err) => console.log(err.code))
-    );
   };
   // useState는 비동기 특성 때문에 즉시 반영되지 않으므로 useEffect 사용
   // useEffect(() => {
