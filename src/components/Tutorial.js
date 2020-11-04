@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import TutorialDataService from "../services/tutorial";
 
 export default function Tutorial({ tutorial, refreshList }) {
-    const [currentTutorial, setCurrentTutorial] = useState(tutorial);
-
-    console.log('tutorial', tutorial);
+  const [currentTutorial, setCurrentTutorial] = useState(tutorial);
 
   const onChangeTitle = (e) => {
     const title = e.target.value;
